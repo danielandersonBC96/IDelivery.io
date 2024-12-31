@@ -13,9 +13,9 @@ const ExploreMenu = ({ category, setCategory }) => {
     }
   }, [setCategory]);
 
-  // Function to handle category selection
+  // Reset to "All" category when "Home" is accessed
   const handleCategoryClick = (item) => {
-    const newCategory = category === item.menu_name ? "All" : item.menu_name;
+    const newCategory = item.menu_name === "Home" ? "All" : item.menu_name;
     setCategory(newCategory);
     localStorage.setItem('selectedCategory', newCategory);
   };
@@ -50,7 +50,7 @@ const ExploreMenu = ({ category, setCategory }) => {
               className="explore-menu-list-item"
             >
               <img
-                className={category === item.menu_name ? 'active' : ''}
+                className={category === item.menu_name || (item.menu_name === "Home" && category === "All") ? 'active' : ''}
                 src={item.menu_image}
                 alt={item.menu_name}
               />
@@ -64,7 +64,6 @@ const ExploreMenu = ({ category, setCategory }) => {
           &gt;
         </button>
       </div>
-     
     </div>
   );
 };

@@ -77,8 +77,9 @@ import profile_icon from './profile_icon.png'
 import bag_icon from './bag_icon.png'
 import logout_icon from './logout_icon.png'
 import parcel_icon from './parcel_icon.png'
-import menu_icon from './menu_icon.jpg'
 
+
+import menu_0 from './menu-icon-vector.jpg'
 
 
 export const assets = {
@@ -101,7 +102,7 @@ export const assets = {
     logout_icon,
     bag_icon,
     parcel_icon,
-    menu_icon
+    menu_0
    
   
 }
@@ -189,6 +190,10 @@ export const acompanhamento_batata = [
 ];
 
 export const menu_list = [
+    {
+      menu_name:'Home',
+      menu_image: menu_0
+    },
     {
         menu_name: "Salad",
         menu_image: menu_1

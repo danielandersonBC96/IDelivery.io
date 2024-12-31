@@ -46,11 +46,18 @@ const NavBar = ({ setShowLogin }) => {
         <div className="menu-close" onClick={toggleMenu}>
           <img src={assets.cross_icon} alt="Close" />
         </div>
-        
-        <li onClick={() => { setMenu("home"); setIsMenuOpen(false); }} className={menu === "home" ? "active" : ""}>Home</li>
-        <li onClick={() => { setMenu("menu"); setIsMenuOpen(false); }} className={menu === "menu" ? "active" : ""}>Menu</li>
-        <li onClick={() => { setMenu("mobile-app"); setIsMenuOpen(false); }} className={menu === "mobile-app" ? "active" : ""}>Mobile App</li>
-        <li onClick={() => { setMenu("contact-us"); setIsMenuOpen(false); }} className={menu === "contact-us" ? "active" : ""}>Contact Us</li>
+
+        {/* Adicionando item "Home" */}
+        <li 
+          className={`navbar-menu-item ${menu === "home" ? "active" : ""}`} 
+          onClick={() => {
+            navigate('/');
+            setMenu("home");
+            toggleMenu(); // Fecha o menu após clicar
+          }}
+        >
+          Home
+        </li>
       </ul>
 
       <div className="navbar-right">

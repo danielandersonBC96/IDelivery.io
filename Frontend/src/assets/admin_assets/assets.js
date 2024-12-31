@@ -7,6 +7,9 @@ import parcel_icon from './parcel_icon.png';
 import editar from './editar.png';
 import excluir from './excluir.png';
 import fechar from './close.png'
+
+
+
 export const assets = {
     logo,
     add_icon,
@@ -16,7 +19,8 @@ export const assets = {
     parcel_icon,
     editar,
     excluir,
-    fechar
+    fechar,
+    
 };
 
 export const url = 'http://localhost:4000';
