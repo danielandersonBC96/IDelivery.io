@@ -12,7 +12,7 @@ import AdminListProduct from './Pages/List/AdminListProduct';
 import PagesDetails from './Pages/FoodDetails/PagesDetails';
 
 const App = () => {
-  const [showLogin, setShowLogin] = useState(true); // Inicia com a tela de login visível
+  const [showLogin, setShowLogin] = useState(false); // Inicia sem mostrar a tela de login
 
   return (
     <div className="App">
