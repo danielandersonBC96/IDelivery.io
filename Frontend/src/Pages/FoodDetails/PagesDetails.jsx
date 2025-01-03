@@ -8,7 +8,6 @@ import {
   acompanhamento_batata, 
   acompanhamento_principal 
 } from '../../assets/frontend_assets/assets';
-import { assets } from '../../assets/frontend_assets/assets';
 
 const PagesDetails = () => {
   const { addToCart, food_list } = useContext(StoreContext);
@@ -42,7 +41,18 @@ const PagesDetails = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product._id, selectedItems);
+      const cartItem = {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        category: product.category,
+        image: product.image || '/default-image.jpg',
+        extras: selectedItems,
+        total: product.price + selectedItems.reduce((sum, item) => sum + item.price, 0),
+      };
+
+      addToCart(cartItem);
       setModalVisible(true);
       setTimeout(() => {
         navigate('/Cart');
@@ -64,13 +74,12 @@ const PagesDetails = () => {
 
   return (
     <div className="product-details">
-   
       <div className="product-image-container">
         <img src={product.image || '/default-image.jpg'} alt={product.name} className="product-details-image" />
       </div>
    
       <div className="product-info">
-        < h1> Detalhes da compra </h1>
+        <h1>Detalhes da compra</h1>
         <p className="product-name">{product.name}</p>
         <p className="product-description">{product.description}</p>
         <p className="product-category">{product.category}</p>
@@ -81,21 +90,15 @@ const PagesDetails = () => {
 
       <div className="Cardapio">
         <h1>Cardápio</h1>
-
         <p className="title-cardapio">Escolha o Refrigerante</p>
         <div className="acompanhamentos-container">
           {acompanhamento_refri.map((item, index) => (
             <div key={index} className="explore-menu-list-coca">
-              <img
-                src={item.acompanhamento_image}
-                alt={item.acompanhamento_name}
-                className="acompanhamento-image"
-              />
+              <img src={item.acompanhamento_image} alt={item.acompanhamento_name} className="acompanhamento-image" />
               <p>{item.acompanhamento_name}</p>
-              <p className='preco'> <strong>Preço:</strong> {item.preco} </p>
+              <p className='preco'><strong>Preço:</strong> {item.preco}</p>
               <input
                 type="checkbox"
-                id={`acompanhamento-refri-${item.acompanhamento_name}`}
                 onChange={(e) => handleCheckboxChange(e, item)}
                 checked={selectedItems.some(selected => selected.name === item.acompanhamento_name)}
               />
@@ -107,16 +110,11 @@ const PagesDetails = () => {
         <div className="acompanhamentos-container">
           {acompanhamento_arroz.map((item, index) => (
             <div key={index} className="explore-menu-list-coca">
-              <img
-                src={item.acompanhamento_arroz_image}
-                alt={item.acompanhamento_arroz_name}
-                className="acompanhamento-image"
-              />
+              <img src={item.acompanhamento_arroz_image} alt={item.acompanhamento_arroz_name} className="acompanhamento-image" />
               <p>{item.acompanhamento_arroz_name}</p>
-              <p className='preco'> <strong>Preço:</strong> {item.preco} </p>
+              <p className='preco'><strong>Preço:</strong> {item.preco}</p>
               <input
                 type="checkbox"
-                id={`acompanhamento-arroz-${item.acompanhamento_arroz_name}`}
                 onChange={(e) => handleCheckboxChange(e, item)}
                 checked={selectedItems.some(selected => selected.name === item.acompanhamento_arroz_name)}
               />
@@ -128,16 +126,11 @@ const PagesDetails = () => {
         <div className="acompanhamentos-container">
           {acompanhamento_batata.map((item, index) => (
             <div key={index} className="explore-menu-list-coca">
-              <img
-                src={item.acompanhamento_batata_image}
-                alt={item.acompanhamento_batata_name}
-                className="acompanhamento-image"
-              />
+              <img src={item.acompanhamento_batata_image} alt={item.acompanhamento_batata_name} className="acompanhamento-image" />
               <p>{item.acompanhamento_batata_name}</p>
-              <p className='preco'> <strong>Preço:</strong> {item.preco} </p>
+              <p className='preco'><strong>Preço:</strong> {item.preco}</p>
               <input
                 type="checkbox"
-                id={`acompanhamento-batata-${item.acompanhamento_batata_name}`}
                 onChange={(e) => handleCheckboxChange(e, item)}
                 checked={selectedItems.some(selected => selected.name === item.acompanhamento_batata_name)}
               />
@@ -149,16 +142,11 @@ const PagesDetails = () => {
         <div className="acompanhamentos-container">
           {acompanhamento_principal.map((item, index) => (
             <div key={index} className="explore-menu-list-coca">
-              <img
-                src={item.acompanhamento_pricipal_image}
-                alt={item.acompanhamento_principal_name}
-                className="acompanhamento-image"
-              />
+              <img src={item.acompanhamento_pricipal_image} alt={item.acompanhamento_principal_name} className="acompanhamento-image" />
               <p>{item.acompanhamento_principal_name}</p>
-              <p className='preco'>Preço: {item.preco} </p>
+              <p className='preco'>Preço: {item.preco}</p>
               <input
                 type="checkbox"
-                id={`acompanhamento-principal-${item.acompanhamento_principal_name}`}
                 onChange={(e) => handleCheckboxChange(e, item)}
                 checked={selectedItems.some(selected => selected.name === item.acompanhamento_principal_name)}
               />
@@ -167,10 +155,7 @@ const PagesDetails = () => {
         </div>
       </div>
 
-      <div className="product-actions">
-        <button className="add-to-cart" onClick={handleAddToCart}>Adicionar ao Carrinho</button>
-        <button className="buy-now">Comprar Agora</button>
-      </div>
+      <button className="add-to-cart-button" onClick={handleAddToCart}>Adicionar ao Carrinho</button>
 
       {modalVisible && (
         <div className="custom-alert-modal">
@@ -178,11 +163,10 @@ const PagesDetails = () => {
             <span className="close-btn" onClick={closeModal}>×</span>
             <h2>Produto Adicionado ao Carrinho</h2>
             <p>
-  O produto <strong>{product.name}</strong> com os acompanhamentos{' '}
-  <strong>{selectedItems.map(item => item.name).join(', ')}</strong> foi adicionado ao carrinho.
-</p>
-
-           
+              O produto <strong>{product.name}</strong> com os acompanhamentos{' '}
+              <strong>{selectedItems.map(item => item.name).join(', ')}</strong> foi adicionado ao carrinho.
+            </p>
+            <p><strong>Total:</strong> R${product.price + selectedItems.reduce((sum, item) => sum + item.price, 0)}</p>
           </div>
         </div>
       )}
