@@ -96,7 +96,7 @@ const PagesDetails = () => {
           { title: "Escolha o Refrigerante", data: acompanhamento_refri, key: "acompanhamento_name", imageKey: "acompanhamento_image" },
           { title: "Escolha o Arroz", data: acompanhamento_arroz, key: "acompanhamento_arroz_name", imageKey: "acompanhamento_arroz_image" },
           { title: "Escolha a Batata", data: acompanhamento_batata, key: "acompanhamento_batata_name", imageKey: "acompanhamento_batata_image" },
-          { title: "Escolha o Principal", data: acompanhamento_principal, key: "acompanhamento_principal_name", imageKey: "acompanhamento_principal_image" }
+          { title: "Escolha o Principal", data: acompanhamento_principal, key: "acompanhamento_principal_name", imageKey:  "acompanhamento_principal_image" }
         ].map(({ title, data, key, imageKey }, index) => (
           <div key={index}>
             <p className="title-cardapio">{title}</p>

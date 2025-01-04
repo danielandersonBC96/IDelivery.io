@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Content/StoreContent';
 import { useNavigate } from 'react-router-dom';
@@ -41,41 +41,49 @@ const Cart = () => {
     const discountAmount = subtotal * discount;
     return safeToFixed(subtotal + deliveryFee - discountAmount);
   };
-
   const sendWhatsAppMessage = () => {
     if (!phoneNumber || !customerName) {
       alert("Preencha o nome e número do cliente antes de continuar.");
       return;
     }
-
+  
     if (!paymentMethod) {
       alert("Selecione um método de pagamento.");
       return;
     }
-
+  
     const formattedItems = Object.keys(cartItems).map((productId) => {
       const item = cartItems[productId];
       if (item.quantity > 0) {
-        return `- ${item.product?.name} (${item.quantity}x) R$ ${safeToFixed(getProductTotal(item))}`;
+        const productTotal = getProductTotal(item);
+        const accompDetails = item.acompanhamentos && item.acompanhamentos.length > 0
+          ? ` (Acompanhamentos: ${item.acompanhamentos.map(acomp => acomp.name).join(', ')})`
+          : '';
+        return `- ${item.product?.name} (${item.quantity}x) R$ ${safeToFixed(productTotal)}${accompDetails}`;
       }
       return null;
     }).filter(Boolean).join("\n");
-
+  
     const subtotal = getTotalCartAmount();
     const discountAmount = subtotal * discount;
     const totalAmount = parseFloat(subtotal - discountAmount + 2).toFixed(2); // Total com desconto e taxa
-
+  
     const message = `Olá, ${customerName}! 😊\n\n` +
+      `🌟 *Idelivery* 🌟\n\n` +
       `🛒 *Itens do Pedido:*\n${formattedItems}\n\n` +
-      `💰 *Total:* R$ ${totalAmount}\n` +
+      `💰 *Total dos Itens:* R$ ${safeToFixed(subtotal)}\n` +
       `📦 *Taxa de entrega:* R$ 2.00\n` +
       `💳 *Método de pagamento:* ${paymentMethod}\n` +
-      `📱 Número: ${phoneNumber}`;
-
-    const url = `https://web.whatsapp.com/send?phone=${encodeURIComponent(phoneNumber)}&text=${encodeURIComponent(message)}`;
+      `🛍️ *Total Final:* R$ ${totalAmount}\n` +
+      `📱 Número: ${phoneNumber}\n\n`;
+  
+    // Corrigir formato do número de telefone
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, ''); // Remove não dígitos
+  
+    const url = `https://web.whatsapp.com/send?phone=55${formattedPhoneNumber}&text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
-
+  
   return (
     <div className="cart">
       <div className="cart-items">
@@ -102,7 +110,7 @@ const Cart = () => {
                     <p>No extras</p>
                   )}
                 </div>
-                <button onClick={() => removeFromCart(productId)} className="remove-button">Remove</button>
+                <button onClick={() => removeFromCart(item.product._id)} className="remove-button">Remove</button>
               </div>
             );
           }
@@ -176,4 +184,3 @@ const Cart = () => {
 };
 
 export default Cart;
-

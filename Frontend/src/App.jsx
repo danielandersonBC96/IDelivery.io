@@ -4,7 +4,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/Home';
 import Cart from './Pages/Cart/Cart';
-import PlaceOrde from './Pages/PlaceOrder/PlaceOrde'; // Corrigido o nome do componente
+ // Corrigido o nome do componente
 import Footer from './Components/Footer/Footer';
 import LoginPopup from './Components/LoginPopup/LoginPopup';
 import AdminHome from './Pages/Admin/AdminHome';

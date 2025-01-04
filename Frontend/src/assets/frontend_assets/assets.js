@@ -110,22 +110,22 @@ export const assets = {
 export const acompanhamento_principal = [
     {
         acompanhamento_principal_name: "Vinagrete",
-        acompanhamento_pricipal_image: vinagrete_image,
+        acompanhamento_principal_image: vinagrete_image,
         preco: 2.50 // Exemplo de preço
     },
     {
         acompanhamento_principal_name: "Vatapá",
-        acompanhamento_pricipal_image: vatapa_image,
+        acompanhamento_principal_image: vatapa_image,
         preco: 3.00
     },
     {
         acompanhamento_principal_name: "Maionese",
-        acompanhamento_pricipal_image: maiones_image,
+        acompanhamento_principal_image: maiones_image,
         preco: 2.80
     },
     {
         acompanhamento_principal_name: "Farofa",
-        acompanhamento_pricipal_image: farofa_image,
+        acompanhamento_principal_image: farofa_image,
         preco: 2.20
     }
 ];

@@ -259,6 +259,7 @@ select{
   padding: 10px;
 }
 
+
 .modal-content button:hover {
   opacity: 0.9;
 }
@@ -272,7 +273,95 @@ select{
 .close-modal:hover {
   background-color: #34495e;
 }
+/* Cart.css */
 
+/* Modal styles */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.select, .input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.select:focus, .input:focus {
+  border-color: #ff6347; /* Tomato color */
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #ff6347; /* Tomato color */
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #e5533d; /* Darker tomato on hover */
+}
+
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 15px;
+  }
+  .modal-content h3 {
+    font-size: 1.3rem;
+  }
+  button {
+    font-size: 1rem;
+  }
+}
+
+input{
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+border-radius: 15px;
+border: solid  1px tomato;
+}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
