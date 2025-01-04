@@ -80,9 +80,16 @@ const Cart = () => {
     // Corrigir formato do número de telefone
     const formattedPhoneNumber = phoneNumber.replace(/\D/g, ''); // Remove não dígitos
   
-    const url = `https://web.whatsapp.com/send?phone=55${formattedPhoneNumber}&text=${encodeURIComponent(message)}`;
+    // Verificar se o dispositivo é mobile ou desktop
+    const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+  
+    const url = isMobile
+      ? `https://wa.me/55${formattedPhoneNumber}?text=${encodeURIComponent(message)}`
+      : `https://web.whatsapp.com/send?phone=55${formattedPhoneNumber}&text=${encodeURIComponent(message)}`;
+  
     window.open(url, '_blank');
   };
+  
   
   return (
     <div className="cart">
@@ -110,7 +117,7 @@ const Cart = () => {
                     <p>No extras</p>
                   )}
                 </div>
-                <button onClick={() => removeFromCart(item.product._id)} className="remove-button">Remove</button>
+                <button  onClick={() => removeFromCart(item.product._id)} className="remove-button">Remove</button>
               </div>
             );
           }
@@ -167,12 +174,14 @@ const Cart = () => {
               placeholder="Nome do cliente"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
+              className='input-modal'
             />
             <input
               type="text"
               placeholder="Número do cliente"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
+            className='input'
             />
             <button onClick={sendWhatsAppMessage}>Enviar WhatsApp</button>
             <button onClick={() => setShowModal(false)}>Cancelar</button>
