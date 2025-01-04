@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { food_list } from "../assets/frontend_assets/assets"; // Certifique-se de que as listas de alimentos estão corretamente exportadas
+import { food_list } from "../assets/frontend_assets/assets";
 
 // Preços dos acompanhamentos (definidos no código)
 const acompanhamento_principal = [
@@ -36,22 +36,25 @@ const StoreContextProvider = (props) => {
 
   // Função para adicionar ao carrinho
   const addToCart = (cartItem) => {
+    if (!cartItem || !cartItem.id || !cartItem.price) {
+      console.warn("Item inválido:", cartItem);
+      return;
+    }
+
     const existingItemIndex = cartItems.findIndex(item => item.product._id === cartItem.id);
 
     if (existingItemIndex !== -1) {
-      // Se já existir no carrinho, apenas atualize os dados (quantidade e acompanhamentos)
       const updatedCartItems = [...cartItems];
       updatedCartItems[existingItemIndex].quantity += 1;
-      updatedCartItems[existingItemIndex].acompanhamentos = cartItem.extras;
-      setCartItems(updatedCartItems); // Atualiza o estado com os itens modificados
+      updatedCartItems[existingItemIndex].acompanhamentos = cartItem.extras || [];
+      setCartItems(updatedCartItems);
     } else {
-      // Se não existir, adicione o item novo ao carrinho
       setCartItems(prev => [
         ...prev,
         {
-          product: cartItem,
+          product: { _id: cartItem.id, ...cartItem },
           quantity: 1,
-          acompanhamentos: cartItem.extras,
+          acompanhamentos: cartItem.extras || [],
         },
       ]);
     }
@@ -59,30 +62,31 @@ const StoreContextProvider = (props) => {
 
   // Função para remover do carrinho
   const removeFromCart = (itemId) => {
+    if (!itemId) {
+      console.warn("ItemId inválido:", itemId);
+      return;
+    }
+
+    console.log(`Tentando remover o item com ID: ${itemId}`);
+
     setCartItems((prev) => {
-      const existingItemIndex = prev.findIndex((item) => item.product._id === itemId);
-
-      if (existingItemIndex !== -1) {
-        const updatedCartItems = [...prev];
-        const item = updatedCartItems[existingItemIndex];
-
-        if (item.quantity === 1) {
-          // Remove o item do carrinho se a quantidade for 1
-          updatedCartItems.splice(existingItemIndex, 1);
-        } else {
-          // Decrementa a quantidade se for maior que 1
-          updatedCartItems[existingItemIndex].quantity -= 1;
-        }
-
-        return updatedCartItems;
+      const updatedCartItems = prev.filter(item => String(item.product._id) !== String(itemId));
+  
+      if (updatedCartItems.length === prev.length) {
+        console.warn(`Item com ID ${itemId} não encontrado no carrinho.`);
       }
 
-      return prev;
+      return updatedCartItems;
     });
   };
 
   // Função para calcular o preço de acompanhamento
   const getAcompanhamentoPrice = (acomp) => {
+    if (!acomp || !acomp.name) {
+      console.warn("Acompanhamento inválido:", acomp);
+      return 0;
+    }
+
     const allAcompanhamentos = [
       ...acompanhamento_principal,
       ...acompanhamento_refri,
@@ -90,9 +94,7 @@ const StoreContextProvider = (props) => {
       ...acompanhamento_batata,
     ];
 
-    const selectedAcompanhamento = allAcompanhamentos.find(
-      (a) => a.name === acomp.name // Encontrar o acompanhamento com base no nome
-    );
+    const selectedAcompanhamento = allAcompanhamentos.find(a => a.name === acomp.name);
     return selectedAcompanhamento ? selectedAcompanhamento.preco : 0;
   };
 
@@ -102,23 +104,19 @@ const StoreContextProvider = (props) => {
     let acompanhamentoTotal = 0;
 
     cartItems.forEach((item) => {
-      // Calcula o total do produto principal
       totalAmount += item.product.price * item.quantity;
 
-      // Adiciona o preço dos acompanhamentos
       item.acompanhamentos.forEach((acomp) => {
-        acompanhamentoTotal += getAcompanhamentoPrice(acomp) * item.quantity; // Multiplicamos pelo número de unidades do item
+        acompanhamentoTotal += acomp.price * item.quantity;
       });
     });
 
-    console.log("Total do Produto:", totalAmount); // Verifique o total do produto
-    console.log("Total dos Acompanhamentos:", acompanhamentoTotal); // Verifique o total dos acompanhamentos
-    return totalAmount + acompanhamentoTotal; // Retorna a soma de ambos
+    return totalAmount + acompanhamentoTotal;
   };
 
   // UseEffect para verificar quando o carrinho mudar
   useEffect(() => {
-    console.log('Cart Items Changed:', cartItems); // Verifique o estado do carrinho sempre que ele mudar
+    console.log("Estado atual do carrinho:", JSON.stringify(cartItems, null, 2));
   }, [cartItems]);
 
   // Contexto com todas as funções e valores
@@ -128,7 +126,7 @@ const StoreContextProvider = (props) => {
     setCartItems,
     addToCart,
     removeFromCart,
-    getTotalCartAmount, // Usando nome correto da função
+    getTotalCartAmount,
   };
 
   return (
