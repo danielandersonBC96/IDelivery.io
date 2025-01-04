@@ -321,7 +321,7 @@ select{
 }
 
 button {
-  width: 100%;
+  width: 10%;
   padding: 10px;
   margin-top: 10px;
   background-color: #ff6347; /* Tomato color */
