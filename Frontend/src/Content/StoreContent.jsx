@@ -1,93 +1,88 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { food_list, acompanhamento_principal, acompanhamento_refri, acompanhamento_arroz, acompanhamento_batata } from "../assets/frontend_assets/assets"; // Certifique-se de que as listas de acompanhamentos estão corretamente exportadas
 
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
-  const [cartItems, setCartItems] = useState({}); // Inicializa o estado do carrinho
+  // Inicializa o estado do carrinho
+  const [cartItems, setCartItems] = useState([]);
 
   // Função para adicionar ao carrinho
-  const addToCart = (itemId, selectedItems) => {
-    const itemInfo = food_list.find((product) => product._id === itemId); // Obtém os detalhes completos do produto usando o itemId
+  const addToCart = (cartItem) => {
+    const existingItemIndex = cartItems.findIndex(item => item.product._id === cartItem.id);
 
-    if (itemInfo) {
-      setCartItems((prev) => ({
+    if (existingItemIndex !== -1) {
+      // Se já existir no carrinho, apenas atualize os dados (quantidade e acompanhamentos)
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingItemIndex].quantity += 1;
+      updatedCartItems[existingItemIndex].acompanhamentos = cartItem.extras;
+      setCartItems(updatedCartItems); // Atualiza o estado com os itens modificados
+    } else {
+      // Se não existir, adicione o item novo ao carrinho
+      setCartItems(prev => [
         ...prev,
-        [itemId]: {
-          product: itemInfo, // Armazena as informações completas do produto
-          quantity: (prev[itemId]?.quantity || 0) + 1, // Incrementa a quantidade
-          acompanhamentos: selectedItems, // Armazena os acompanhamentos selecionados
+        {
+          product: cartItem,
+          quantity: 1,
+          acompanhamentos: cartItem.extras,
         },
-      }));
+      ]);
     }
   };
 
   // Função para remover do carrinho
   const removeFromCart = (itemId) => {
     setCartItems((prev) => {
-      if (prev[itemId]?.quantity === 1) {
-        const { [itemId]: _, ...rest } = prev; // Remove o item do carrinho
-        return rest;
+      const existingItemIndex = prev.findIndex((item) => item.product._id === itemId);
+
+      if (existingItemIndex !== -1) {
+        const updatedCartItems = [...prev];
+        const item = updatedCartItems[existingItemIndex];
+
+        if (item.quantity === 1) {
+          // Remove o item do carrinho se a quantidade for 1
+          updatedCartItems.splice(existingItemIndex, 1);
+        } else {
+          // Decrementa a quantidade se for maior que 1
+          updatedCartItems[existingItemIndex].quantity -= 1;
+        }
+
+        return updatedCartItems;
       }
-      return {
-        ...prev,
-        [itemId]: {
-          ...prev[itemId],
-          quantity: prev[itemId].quantity - 1, // Diminui a quantidade
-        },
-      };
+
+      return prev;
     });
   };
 
-  // Calcular o valor total do carrinho
+  // Função para calcular o preço de acompanhamento
+  const getAcompanhamentoPrice = (acomp) => {
+    const allAcompanhamentos = [
+      ...acompanhamento_principal,
+      ...acompanhamento_refri,
+      ...acompanhamento_arroz,
+      ...acompanhamento_batata,
+    ];
+
+    const selectedAcompanhamento = allAcompanhamentos.find(
+      (a) => a.name === acomp.name // Alterei para procurar pela propriedade `name` diretamente
+    );
+    return selectedAcompanhamento ? selectedAcompanhamento.preco : 0;
+  };
+
+  // Função para calcular o total do carrinho
   const getTotalCartAmount = () => {
     let totalAmount = 0;
 
-    console.log('Current Cart Items:', cartItems); // Verifica os itens no carrinho
+    cartItems.forEach((item) => {
+      // Calcula o total do produto principal
+      totalAmount += item.product.price * item.quantity;
 
-    for (const itemId in cartItems) {
-      const itemInfo = food_list.find((product) => product._id === String(itemId)); // Certifique-se que itemId seja uma string
+      // Adiciona o preço dos acompanhamentos
+      item.acompanhamentos.forEach((acomp) => {
+        totalAmount += getAcompanhamentoPrice(acomp);
+      });
+    });
 
-      if (itemInfo) {
-        // Calcula o total do produto principal
-        totalAmount += itemInfo.price * cartItems[itemId].quantity;
-
-        // Adiciona o preço dos acompanhamentos selecionados
-        cartItems[itemId].acompanhamentos.forEach((acomp) => {
-          if (acomp.acompanhamento_principal_name) {
-            const acompanhamento = acompanhamento_principal.find(
-              (a) => a.acompanhamento_principal_name === acomp.acompanhamento_principal_name
-            );
-            if (acompanhamento) {
-              totalAmount += acompanhamento.preco;
-            }
-          } else if (acomp.acompanhamento_name) {
-            const acompanhamento = acompanhamento_refri.find(
-              (a) => a.acompanhamento_name === acomp.acompanhamento_name
-            );
-            if (acompanhamento) {
-              totalAmount += acompanhamento.preco;
-            }
-          } else if (acomp.acompanhamento_arroz_name) {
-            const acompanhamento = acompanhamento_arroz.find(
-              (a) => a.acompanhamento_arroz_name === acomp.acompanhamento_arroz_name
-            );
-            if (acompanhamento) {
-              totalAmount += acompanhamento.preco;
-            }
-          } else if (acomp.acompanhamento_batata_name) {
-            const acompanhamento = acompanhamento_batata.find(
-              (a) => a.acompanhamento_batata_name === acomp.acompanhamento_batata_name
-            );
-            if (acompanhamento) {
-              totalAmount += acompanhamento.preco;
-            }
-          }
-        });
-      }
-    }
-
-    console.log('Calculated Total Amount:', totalAmount); // Verifique o valor calculado
     return totalAmount;
   };
 
@@ -103,7 +98,7 @@ const StoreContextProvider = (props) => {
     setCartItems,
     addToCart,
     removeFromCart,
-    getTotalCartAmount, // Usando nome correto da função
+    getTotalCartAmount,
   };
 
   return (
