@@ -1,5 +1,32 @@
 import { createContext, useState, useEffect } from "react";
-import { food_list, acompanhamento_principal, acompanhamento_refri, acompanhamento_arroz, acompanhamento_batata } from "../assets/frontend_assets/assets"; // Certifique-se de que as listas de acompanhamentos estão corretamente exportadas
+import { food_list } from "../assets/frontend_assets/assets"; // Certifique-se de que as listas de alimentos estão corretamente exportadas
+
+// Preços dos acompanhamentos (definidos no código)
+const acompanhamento_principal = [
+  { name: "Vinagrete", preco: 2.5 },
+  { name: "Vatapá", preco: 3 },
+  { name: "Maionese", preco: 2.8 },
+  { name: "Farofa", preco: 2 },
+];
+
+const acompanhamento_refri = [
+  { name: "Refrigerante 300 ml", preco: 3 },
+  { name: "Refrigerante 1l", preco: 5 },
+  { name: "Refrigerante 2l", preco: 7 },
+];
+
+const acompanhamento_arroz = [
+  { name: "Arroz Branco", preco: 4 },
+  { name: "Arroz com brócolis", preco: 5 },
+  { name: "Arroz Carreteiro", preco: 6 },
+  { name: "Arroz Tropeiro", preco: 5.5 },
+];
+
+const acompanhamento_batata = [
+  { name: "Batata média 1 pessoa", preco: 3.5 },
+  { name: "Batata grande 2 pessoas", preco: 6.5 },
+  { name: "Batata família", preco: 8.5 },
+];
 
 export const StoreContext = createContext(null);
 
@@ -64,7 +91,7 @@ const StoreContextProvider = (props) => {
     ];
 
     const selectedAcompanhamento = allAcompanhamentos.find(
-      (a) => a.name === acomp.name // Alterei para procurar pela propriedade `name` diretamente
+      (a) => a.name === acomp.name // Encontrar o acompanhamento com base no nome
     );
     return selectedAcompanhamento ? selectedAcompanhamento.preco : 0;
   };
@@ -72,6 +99,7 @@ const StoreContextProvider = (props) => {
   // Função para calcular o total do carrinho
   const getTotalCartAmount = () => {
     let totalAmount = 0;
+    let acompanhamentoTotal = 0;
 
     cartItems.forEach((item) => {
       // Calcula o total do produto principal
@@ -79,11 +107,13 @@ const StoreContextProvider = (props) => {
 
       // Adiciona o preço dos acompanhamentos
       item.acompanhamentos.forEach((acomp) => {
-        totalAmount += getAcompanhamentoPrice(acomp);
+        acompanhamentoTotal += getAcompanhamentoPrice(acomp) * item.quantity; // Multiplicamos pelo número de unidades do item
       });
     });
 
-    return totalAmount;
+    console.log("Total do Produto:", totalAmount); // Verifique o total do produto
+    console.log("Total dos Acompanhamentos:", acompanhamentoTotal); // Verifique o total dos acompanhamentos
+    return totalAmount + acompanhamentoTotal; // Retorna a soma de ambos
   };
 
   // UseEffect para verificar quando o carrinho mudar
@@ -98,7 +128,7 @@ const StoreContextProvider = (props) => {
     setCartItems,
     addToCart,
     removeFromCart,
-    getTotalCartAmount,
+    getTotalCartAmount, // Usando nome correto da função
   };
 
   return (
