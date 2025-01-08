@@ -25,4 +25,21 @@ db.run(`CREATE TABLE IF NOT EXISTS foods (
     }
 });
 
+//Criar Tabela de 'users' se ela nao existir 
+db.run(
+
+`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+)` , ( err)=>{
+  if (err) {
+  console.log('Error ao criar a tabela users', err.message)  
+  } else {
+     console.log('Tabela users criada com sucesso ')
+  }
+});
+
+
 export default db;

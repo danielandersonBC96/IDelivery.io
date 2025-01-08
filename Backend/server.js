@@ -3,7 +3,9 @@ import cors from 'cors';
 import path from 'path';
 import db from './Config/database.js';
 import foodRoutes from './Router/foodRouter.js';
+import useRoutes from './Router/userRoutes.js'
 import { fileURLToPath } from 'url';
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,6 +26,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/foods', foodRoutes);
+app.use('/users', useRoutes)
 
 app.listen(port, () => {
     console.log(`Server Started on http://localhost:${port}`);
